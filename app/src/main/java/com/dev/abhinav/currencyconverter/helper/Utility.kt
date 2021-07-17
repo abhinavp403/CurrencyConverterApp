@@ -2,24 +2,22 @@ package com.dev.abhinav.currencyconverter.helper
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.annotation.RequiresApi
 
 object Utility {
 
-    // hide the keyboard
+    // hide keyboard
     fun hideKeyboard(activity: Activity) {
-        val imm = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val input = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         var view = activity.currentFocus
         if(view == null) {
             view = View(activity)
         }
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
+        input.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     // to check if network is connected
@@ -50,15 +48,5 @@ object Utility {
             }
         }
         return false
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    fun makeStatusBarTransparent(activity: Activity) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val decor = activity.window.decorView
-            decor.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            val w = activity.window
-            w.statusBarColor = Color.TRANSPARENT
-        }
     }
 }

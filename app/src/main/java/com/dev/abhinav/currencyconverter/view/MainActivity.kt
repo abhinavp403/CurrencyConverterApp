@@ -1,20 +1,16 @@
 package com.dev.abhinav.currencyconverter.view
 
-import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.annotation.ColorInt
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.core.content.ContextCompat
-import com.dev.abhinav.currencyconverter.R
 import com.dev.abhinav.currencyconverter.databinding.ActivityMainBinding
 import com.dev.abhinav.currencyconverter.helper.EndPoints
 import com.dev.abhinav.currencyconverter.helper.Resource
 import com.dev.abhinav.currencyconverter.helper.Utility
 import com.dev.abhinav.currencyconverter.model.Rates
 import com.dev.abhinav.currencyconverter.viewmodel.MainViewModel
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -29,10 +25,7 @@ class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_main)
-        //Utility.makeStatusBarTransparent(this)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
@@ -101,23 +94,9 @@ class MainActivity : AppCompatActivity() {
         binding.btnConvert.setOnClickListener {
             val numberToConvert = binding.etFirstCurrency.text.toString()
             if (numberToConvert.isEmpty() || numberToConvert == "0") {
-                Snackbar.make(
-                    binding.mainLayout,
-                    "Input a value in the first text field, result will be shown in the second text field",
-                    Snackbar.LENGTH_LONG
-                )
-                    .withColor(ContextCompat.getColor(this, R.color.dark_red))
-                    .setTextColor(ContextCompat.getColor(this, R.color.white))
-                    .show()
+                Toast.makeText(applicationContext, "Input a value in the first text field, result will be shown in the second text field", Toast.LENGTH_LONG).show()
             } else if (!Utility.isNetworkAvailable(this)) {
-                Snackbar.make(
-                    binding.mainLayout,
-                    "You are not connected to the internet",
-                    Snackbar.LENGTH_LONG
-                )
-                    .withColor(ContextCompat.getColor(this, R.color.dark_red))
-                    .setTextColor(ContextCompat.getColor(this, R.color.white))
-                    .show()
+                Toast.makeText(applicationContext, "You are not connected to the internet", Toast.LENGTH_LONG).show()
             } else {
                 doConversion()
             }
@@ -147,10 +126,8 @@ class MainActivity : AppCompatActivity() {
         observeUi()
     }
 
-    @SuppressLint("SetTextI18n")
     private fun observeUi() {
         mainViewModel.data.observe(this, androidx.lifecycle.Observer {result ->
-
             when(result.status){
                 Resource.Status.SUCCESS -> {
                     if (result.data?.status == "success"){
@@ -166,36 +143,21 @@ class MainActivity : AppCompatActivity() {
                         binding.btnConvert.visibility = View.VISIBLE
                     }
                     else if(result.data?.status == "fail"){
-                        val layout = binding.mainLayout
-                        Snackbar.make(layout,"Ooops! something went wrong, Try again", Snackbar.LENGTH_LONG)
-                            .withColor(ContextCompat.getColor(this, R.color.dark_red))
-                            .setTextColor(ContextCompat.getColor(this, R.color.white))
-                            .show()
+                        Toast.makeText(applicationContext,"Ooops! something went wrong, Try again", Toast.LENGTH_LONG).show()
                         binding.prgLoading.visibility = View.GONE
                         binding.btnConvert.visibility = View.VISIBLE
                     }
                 }
-
                 Resource.Status.ERROR -> {
-                    val layout = binding.mainLayout
-                    Snackbar.make(layout,  "Oopps! Something went wrong, Try again", Snackbar.LENGTH_LONG)
-                        .withColor(ContextCompat.getColor(this, R.color.dark_red))
-                        .setTextColor(ContextCompat.getColor(this, R.color.white))
-                        .show()
+                    Toast.makeText(applicationContext,  "Oopps! Something went wrong, Try again", Toast.LENGTH_LONG).show()
                     binding.prgLoading.visibility = View.GONE
                     binding.btnConvert.visibility = View.VISIBLE
                 }
-
                 Resource.Status.LOADING -> {
                     binding.prgLoading.visibility = View.VISIBLE
                     binding.btnConvert.visibility = View.GONE
                 }
             }
         })
-    }
-
-    private fun Snackbar.withColor(@ColorInt colorInt: Int): Snackbar {
-        this.view.setBackgroundColor(colorInt)
-        return this
     }
 }
