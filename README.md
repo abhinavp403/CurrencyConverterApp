@@ -5,7 +5,7 @@ Two drop down lists of countries are provided and conversion occurs between the 
 
 API Data is retrieved from: https://currency.getgeoapi.com/
 
-Architecture is MVVM (RecipeListEvent uses MVI)
+Architecture is MVVM
 
 Libraries Used-
 1) Material Spinner
