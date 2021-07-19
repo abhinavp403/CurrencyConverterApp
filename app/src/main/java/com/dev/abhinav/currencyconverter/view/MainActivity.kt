@@ -1,15 +1,18 @@
 package com.dev.abhinav.currencyconverter.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import com.dev.abhinav.currencyconverter.adapter.SpinnerAdapter
 import com.dev.abhinav.currencyconverter.databinding.ActivityMainBinding
 import com.dev.abhinav.currencyconverter.helper.EndPoints
 import com.dev.abhinav.currencyconverter.helper.Resource
 import com.dev.abhinav.currencyconverter.helper.Utility
 import com.dev.abhinav.currencyconverter.model.Rates
+import com.dev.abhinav.currencyconverter.model.SpinnerItem
 import com.dev.abhinav.currencyconverter.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -23,6 +26,8 @@ class MainActivity : AppCompatActivity() {
     private var selectedItem1: String? = "AFN"
     private var selectedItem2: String? = "AFN"
     private val mainViewModel: MainViewModel by viewModels()
+
+    private var spinnerList = ArrayList<SpinnerItem?>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,9 +65,12 @@ class MainActivity : AppCompatActivity() {
             selectedItem2 = currencySymbol
             binding.txtSecondCurrencyName.text = selectedItem2
         }
+
+        val spinnertest = binding.spinnertest
+        initList()
+        spinnertest.adapter = SpinnerAdapter(this, 0, spinnerList)
     }
 
-    //private fun getCountryCode(countryName: String) = Locale.getISOCountries().find { Locale("", it).displayCountry == countryName }
     private fun getCountryCode(countryName: String): String {
         return Locale.getISOCountries().find { Locale("", it).displayCountry == countryName }.toString()
     }
@@ -77,17 +85,38 @@ class MainActivity : AppCompatActivity() {
         return ""
     }
 
-    private fun getAllCountries(): ArrayList<String> {
+    private fun getAllCountries(): List<SpinnerItem> {
         val locales = Locale.getAvailableLocales()
-        val countries = ArrayList<String>()
+        val countries = ArrayList<SpinnerItem>()
+        val countryNames = ArrayList<String>()
         for (locale in locales) {
             val country = locale.displayCountry
-            if (country.trim { it <= ' ' }.isNotEmpty() && !countries.contains(country)) {
-                countries.add(country)
+            if (country.trim { it <= ' ' }.isNotEmpty() && !countryNames.contains(country)) {
+                val countryCode = getCountryCode(country)
+                val currencySymbol = getSymbol(countryCode)
+                countries.add(SpinnerItem(country, 0, currencySymbol))
+                countryNames.add(country)
             }
         }
-        countries.sort()
-        return countries
+        //countries.sort()
+        return countries.sortedBy { it.countryName }
+    }
+
+    private fun initList(): List<SpinnerItem?> {
+        val locales = Locale.getAvailableLocales()
+        val countryNames = ArrayList<String>()
+        for (locale in locales) {
+            val country = locale.displayCountry
+            if (country.trim { it <= ' ' }.isNotEmpty() && !countryNames.contains(country)) {
+                val countryCode = getCountryCode(country)
+                val currencySymbol = getSymbol(countryCode)
+                spinnerList.add(SpinnerItem(country, 0, currencySymbol))
+                countryNames.add(country)
+            }
+        }
+        val testlist = spinnerList.sortedBy { it!!.countryName }
+        //Log.d("qqq", Arrays.toString(testlist))
+        return testlist
     }
 
     private fun setUpClickListener() {
