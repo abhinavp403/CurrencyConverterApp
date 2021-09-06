@@ -16,6 +16,7 @@ import com.dev.abhinav.currencyconverter.model.SpinnerItem
 import com.dev.abhinav.currencyconverter.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import com.blongho.country_data.World
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
+        World.init(applicationContext)
         setContentView(view)
         initSpinner()
         setUpClickListener()
@@ -41,7 +43,6 @@ class MainActivity : AppCompatActivity() {
     private fun initSpinner() {
         val spinner1 = binding.spnFirstCountry
         spinner1.setItems( getAllCountries() )
-
         //hide key board when spinner shows
         spinner1.setOnClickListener {
             Utility.hideKeyboard(this)
@@ -67,12 +68,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         val spinnertest = binding.spinnertest
-        initList()
-        spinnertest.adapter = SpinnerAdapter(this, 0, spinnerList)
+        spinnertest.adapter = SpinnerAdapter(this, 0, initList())
     }
 
     private fun getCountryCode(countryName: String): String {
         return Locale.getISOCountries().find { Locale("", it).displayCountry == countryName }.toString()
+    }
+
+    private fun getFlag(countryCode: String): String {
+        val firstLetter = Character.codePointAt(countryCode, 0) - 0x41 + 0x1F1E6
+        val secondLetter = Character.codePointAt(countryCode, 1) - 0x41 + 0x1F1E6
+        Log.d("flaggg", String(Character.toChars(firstLetter)) + String(Character.toChars(secondLetter)))
+        return String(Character.toChars(firstLetter)) + String(Character.toChars(secondLetter))
     }
 
     private fun getSymbol(countryCode: String?): String {
@@ -85,21 +92,17 @@ class MainActivity : AppCompatActivity() {
         return ""
     }
 
-    private fun getAllCountries(): List<SpinnerItem> {
+    private fun getAllCountries(): ArrayList<String> {
         val locales = Locale.getAvailableLocales()
-        val countries = ArrayList<SpinnerItem>()
-        val countryNames = ArrayList<String>()
+        val countries = ArrayList<String>()
         for (locale in locales) {
             val country = locale.displayCountry
-            if (country.trim { it <= ' ' }.isNotEmpty() && !countryNames.contains(country)) {
-                val countryCode = getCountryCode(country)
-                val currencySymbol = getSymbol(countryCode)
-                countries.add(SpinnerItem(country, 0, currencySymbol))
-                countryNames.add(country)
+            if (country.trim { it <= ' ' }.isNotEmpty() && !countries.contains(country)) {
+                countries.add(country)
             }
         }
-        //countries.sort()
-        return countries.sortedBy { it.countryName }
+        countries.sort()
+        return countries
     }
 
     private fun initList(): List<SpinnerItem?> {
@@ -109,14 +112,17 @@ class MainActivity : AppCompatActivity() {
             val country = locale.displayCountry
             if (country.trim { it <= ' ' }.isNotEmpty() && !countryNames.contains(country)) {
                 val countryCode = getCountryCode(country)
+                val flag = World.getFlagOf(country)
+                //val flag = getFlag(countryCode)
+                //Log.d("flaggg", countryCode)
                 val currencySymbol = getSymbol(countryCode)
-                spinnerList.add(SpinnerItem(country, 0, currencySymbol))
-                countryNames.add(country)
+                if(currencySymbol != "") {
+                    spinnerList.add(SpinnerItem(country, flag, currencySymbol))
+                    countryNames.add(country)
+                }
             }
         }
-        val testlist = spinnerList.sortedBy { it!!.countryName }
-        //Log.d("qqq", Arrays.toString(testlist))
-        return testlist
+        return spinnerList.sortedBy { it!!.countryName }
     }
 
     private fun setUpClickListener() {

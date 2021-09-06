@@ -10,9 +10,8 @@ import android.view.View
 import android.widget.ImageView
 import com.dev.abhinav.currencyconverter.R
 import android.widget.TextView
-import java.util.ArrayList
 
-class SpinnerAdapter(context: Context?, resource: Int, list: ArrayList<SpinnerItem?>?) : ArrayAdapter<Any?>(context!!, resource, list!! as List<Any?>) {
+class SpinnerAdapter(context: Context?, resource: Int, list: List<SpinnerItem?>) : ArrayAdapter<Any?>(context!!, resource, list as List<Any?>) {
 
     @SuppressLint("ViewHolder")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
