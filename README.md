@@ -10,9 +10,10 @@ Architecture is MVVM
 Libraries Used-
 1) Material Spinner
 2) Retrofit
-3) View Binding
+3) Data Binding
 4) Coroutines
 5) Hilt Injection
 6) Glide
 7) ViewModel
 8) LiveData
+9) Blongho World Country Data
