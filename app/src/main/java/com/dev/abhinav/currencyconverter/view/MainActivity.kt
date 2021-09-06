@@ -1,11 +1,12 @@
 package com.dev.abhinav.currencyconverter.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.widget.AdapterView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.blongho.country_data.World
 import com.dev.abhinav.currencyconverter.adapter.SpinnerAdapter
 import com.dev.abhinav.currencyconverter.databinding.ActivityMainBinding
 import com.dev.abhinav.currencyconverter.helper.EndPoints
@@ -16,7 +17,6 @@ import com.dev.abhinav.currencyconverter.model.SpinnerItem
 import com.dev.abhinav.currencyconverter.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
-import com.blongho.country_data.World
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
     private var selectedItem1: String? = "AFN"
     private var selectedItem2: String? = "AFN"
     private val mainViewModel: MainViewModel by viewModels()
-
     private var spinnerList = ArrayList<SpinnerItem?>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,44 +41,34 @@ class MainActivity : AppCompatActivity() {
 
     private fun initSpinner() {
         val spinner1 = binding.spnFirstCountry
-        spinner1.setItems( getAllCountries() )
-        //hide key board when spinner shows
-        spinner1.setOnClickListener {
-            Utility.hideKeyboard(this)
-        }
-        spinner1.setOnItemSelectedListener { _, _, _, item ->
-            val countryCode = getCountryCode(item.toString())
-            val currencySymbol = getSymbol(countryCode)
-            selectedItem1 = currencySymbol
-            binding.txtFirstCurrencyName.text = selectedItem1
+        spinner1.adapter = SpinnerAdapter(this, 0, initList())
+        spinner1.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val countryCode = getCountryCode(spinnerList.sortedBy { it!!.countryName }[position]!!.countryName)
+                val currencySymbol = getSymbol(countryCode)
+                selectedItem1 = currencySymbol
+                binding.txtFirstCurrencyName.text = selectedItem1
+            }
+
+            override fun onNothingSelected(parentView: AdapterView<*>?) {}
         }
 
         val spinner2 = binding.spnSecondCountry
-        spinner2.setItems( getAllCountries() )
-        //hide key board when spinner shows
-        spinner2.setOnClickListener {
-            Utility.hideKeyboard(this)
-        }
-        spinner2.setOnItemSelectedListener { _, _, _, item ->
-            val countryCode = getCountryCode(item.toString())
-            val currencySymbol = getSymbol(countryCode)
-            selectedItem2 = currencySymbol
-            binding.txtSecondCurrencyName.text = selectedItem2
-        }
+        spinner2.adapter = SpinnerAdapter(this, 0, initList())
+        spinner2.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val countryCode = getCountryCode(spinnerList.sortedBy { it!!.countryName }[position]!!.countryName)
+                val currencySymbol = getSymbol(countryCode)
+                selectedItem2 = currencySymbol
+                binding.txtSecondCurrencyName.text = selectedItem2
+            }
 
-        val spinnertest = binding.spinnertest
-        spinnertest.adapter = SpinnerAdapter(this, 0, initList())
+            override fun onNothingSelected(parentView: AdapterView<*>?) {}
+        }
     }
 
     private fun getCountryCode(countryName: String): String {
         return Locale.getISOCountries().find { Locale("", it).displayCountry == countryName }.toString()
-    }
-
-    private fun getFlag(countryCode: String): String {
-        val firstLetter = Character.codePointAt(countryCode, 0) - 0x41 + 0x1F1E6
-        val secondLetter = Character.codePointAt(countryCode, 1) - 0x41 + 0x1F1E6
-        Log.d("flaggg", String(Character.toChars(firstLetter)) + String(Character.toChars(secondLetter)))
-        return String(Character.toChars(firstLetter)) + String(Character.toChars(secondLetter))
     }
 
     private fun getSymbol(countryCode: String?): String {
@@ -92,29 +81,15 @@ class MainActivity : AppCompatActivity() {
         return ""
     }
 
-    private fun getAllCountries(): ArrayList<String> {
-        val locales = Locale.getAvailableLocales()
-        val countries = ArrayList<String>()
-        for (locale in locales) {
-            val country = locale.displayCountry
-            if (country.trim { it <= ' ' }.isNotEmpty() && !countries.contains(country)) {
-                countries.add(country)
-            }
-        }
-        countries.sort()
-        return countries
-    }
-
     private fun initList(): List<SpinnerItem?> {
         val locales = Locale.getAvailableLocales()
         val countryNames = ArrayList<String>()
+        spinnerList = ArrayList<SpinnerItem?>()
         for (locale in locales) {
             val country = locale.displayCountry
             if (country.trim { it <= ' ' }.isNotEmpty() && !countryNames.contains(country)) {
                 val countryCode = getCountryCode(country)
                 val flag = World.getFlagOf(country)
-                //val flag = getFlag(countryCode)
-                //Log.d("flaggg", countryCode)
                 val currencySymbol = getSymbol(countryCode)
                 if(currencySymbol != "") {
                     spinnerList.add(SpinnerItem(country, flag, currencySymbol))

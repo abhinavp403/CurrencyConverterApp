@@ -44,25 +44,6 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintVertical_bias="0.005"/>
 
-        <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/spinnertest"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:text="@string/afn"
-            android:spinnerMode="dropdown"
-            android:dropDownVerticalOffset="35dp"
-            android:textColor="@android:color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtCalaculator"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintVertical_bias="0.0"/>
-
         <TextView
             android:id="@+id/txtFrom"
             android:layout_width="wrap_content"
@@ -77,7 +58,7 @@
             app:layout_constraintHorizontal_bias="0.106"
             app:layout_constraintVertical_bias="0.031"/>
 
-        <com.jaredrummler.materialspinner.MaterialSpinner
+        <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/spnFirstCountry"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -86,8 +67,9 @@
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             android:text="@string/afn"
+            android:spinnerMode="dialog"
+            android:dropDownVerticalOffset="35dp"
             android:textColor="@android:color/black"
-            app:ms_arrow_tint="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -109,7 +91,7 @@
             app:layout_constraintHorizontal_bias="0.106"
             app:layout_constraintVertical_bias="0.031"/>
 
-        <com.jaredrummler.materialspinner.MaterialSpinner
+        <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/spnSecondCountry"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -118,8 +100,9 @@
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             android:text="@string/afn"
+            android:spinnerMode="dialog"
+            android:dropDownVerticalOffset="35dp"
             android:textColor="@android:color/black"
-            app:ms_arrow_tint="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
