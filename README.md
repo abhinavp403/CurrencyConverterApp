@@ -19,5 +19,5 @@ Libraries Used-
 9) Blongho World Country Data
 
 
-Check out the app in the Play Store!
+Check out the app in the Play Store!  
 https://play.google.com/store/apps/details?id=com.dev.abhinav.currencyconverter
