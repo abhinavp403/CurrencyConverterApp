@@ -141,8 +141,7 @@ class MainActivity : AppCompatActivity() {
             when(result.status){
                 Resource.Status.SUCCESS -> {
                     if (result.data?.status == "success"){
-                        val map: Map<String, Rates>
-                        map = result.data.rates
+                        val map = result.data.rates
                         map.keys.forEach {
                             val rateForAmount = map[it]?.rate_for_amount
                             mainViewModel.convertedRate.value = rateForAmount

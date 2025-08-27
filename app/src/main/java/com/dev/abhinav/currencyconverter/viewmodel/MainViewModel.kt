@@ -1,6 +1,5 @@
 package com.dev.abhinav.currencyconverter.viewmodel
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,11 +7,13 @@ import com.dev.abhinav.currencyconverter.helper.Resource
 import com.dev.abhinav.currencyconverter.helper.SingleLiveEvent
 import com.dev.abhinav.currencyconverter.model.ApiResponse
 import com.dev.abhinav.currencyconverter.model.Rates
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel
-@ViewModelInject constructor(private val mainRepo: MainRepo) : ViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor(private val mainRepo: MainRepo) : ViewModel() {
     private val _data = SingleLiveEvent<Resource<ApiResponse>>()
 
     val data = _data
